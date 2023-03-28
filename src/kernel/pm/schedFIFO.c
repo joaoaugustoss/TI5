@@ -26,24 +26,33 @@
 #include <nanvix/klib.h>
 
 /**
+ * @brief Finishing process
+ *
+ * 
+ * @param proc Process to be finished
+ */
+PUBLIC void finisherF(struct process *proc){
+    proc->state = PROC_ZOMBIE;
+}
+
+/**
  * @brief Schedules a process to execution.
  * 
  * @param proc Process to be scheduled.
  */
-PUBLIC void sched(struct process *proc)
+PUBLIC void schedF(struct process *proc)
 {
 	proc->state = PROC_READY;
-	proc->counter = 0;
 }
 
 /**
  * @brief Stops the current running process.
  */
-PUBLIC void stop(void)
+PUBLIC void stopF(void)
 {
 	curr_proc->state = PROC_STOPPED;
 	sndsig(curr_proc->father, SIGCHLD);
-	yield();
+	yieldF();
 }
 
 /**
@@ -53,25 +62,24 @@ PUBLIC void stop(void)
  * 
  * @note The process must stopped to be resumed.
  */
-PUBLIC void resume(struct process *proc)
+PUBLIC void resumeF(struct process *proc)
 {	
 	/* Resume only if process has stopped. */
 	if (proc->state == PROC_STOPPED)
-		sched(proc);
+		schedF(proc);
 }
 
 /**
  * @brief Yields the processor.
  */
-PUBLIC void yield(void)
+PUBLIC void yieldF(void)
 {
-
+    kprintf("Entrei aqui meu amigo\n");
 	struct process *p;    /* Working process.     */
 	struct process *next; /* Next process to run. */
 	
-	/* Re-schedule process for execution. */
-	if (curr_proc->state == PROC_RUNNING)
-		sched(curr_proc);
+	/* Finishing process. */
+
 
 	/* Remember this process. */
 	last_proc = curr_proc;
@@ -87,39 +95,31 @@ PUBLIC void yield(void)
 		if ((p->alarm) && (p->alarm < ticks))
 			p->alarm = 0, sndsig(p, SIGALRM);
 	}
+	kprintf("Opa hehe\n");
 
 	/* Choose a process to run next. */
 	next = IDLE;
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
-		/* Skip non-ready process. */
-		if (p->state != PROC_READY)
-			continue;
 		
-		/*
-		 * Process with higher
-		 * waiting time found.
-		 */
-		if (p->counter > next->counter)
-		{
-			next->counter++;
-			next = p;
+		if( p->status == PROC_READY ){
+            kprintf("PID: %d\n", p->pid);
+            next = p;
+            break;
+        } else {
+			p = p + 1;
+			kprintf("Aqui dentro: %d\n", p->pid);
 		}
-			
-		/*
-		 * Increment waiting
-		 * time of process.
-		 */
-		else
-			p->counter++;
+
 	}
 		
+    
 
 	/* Switch to next process. */
 	next->priority = PRIO_USER;
 	next->state = PROC_RUNNING;
-	next->counter = PROC_QUANTUM;
 	if (curr_proc != next) {
 		switch_to(next);
+        finisherF(curr_proc);
 	}
 }

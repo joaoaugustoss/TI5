@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <limits.h>
+#include <nanvix/klib.h>
 
 /**
  * @brief Idle process page directory.

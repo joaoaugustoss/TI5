@@ -79,8 +79,10 @@ PRIVATE ssize_t ramdisk_write(unsigned minor, const char *buf, size_t n, off_t o
 		ptr += count;
 		
 		/* Avoid starvation. */
-		if (n > 0)
+		if (n > 0) {
+			kprintf("ALO RAMDISK\n");
 			yield();
+		}
 	}
 	
 	return ((ssize_t)n);
@@ -120,8 +122,10 @@ PRIVATE ssize_t ramdisk_read(unsigned minor, char *buf, size_t n, off_t off)
 		ptr += count;
 		
 		/* Avoid starvation. */
-		if (n > 0)
+		if (n > 0) {
+			kprintf("ALO RAMDISK2\n");
 			yield();
+		}
 	}
 	
 	return ((ssize_t)n);

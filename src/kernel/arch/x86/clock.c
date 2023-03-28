@@ -41,11 +41,29 @@ PRIVATE void do_clock()
 		return;
 	}
 	
+
+    //if(curr_proc->state == PROC_ZOMBIE) kprintf("Encontramos um maldito aqui\n");
+
 	curr_proc->utime++;
 		
 	/* Give up processor time. */
-	if (--curr_proc->counter == 0)
-		yield();
+	/*if (--curr_proc->counter == 0)
+		yield();*/
+
+    //if ( (last_proc->state == PROC_RUNNING) || last_proc->state == PROC_READY  ) {
+    //    kprintf("Interessante, o status atual é: %d\n", last_proc->state);
+    //} else {
+    //    yield();
+    //}
+
+    if ( last_proc->pid < 3 && curr_proc->pid < 3 ){
+        kprintf("LAST: %d - CURR: %d\n", last_proc->pid, curr_proc->pid );
+        yield();
+    } else {
+        kprintf("Opa, eai!\n");
+        yieldF();
+    }
+
 }
 
 /*

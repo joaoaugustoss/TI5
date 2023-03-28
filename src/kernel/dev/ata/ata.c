@@ -755,8 +755,10 @@ PRIVATE ssize_t ata_read(unsigned minor, char *buf, size_t n, off_t off)
 		off += count;
 	
 		/* Avoid starvation. */
-		if ((n - i) > 0)
+		if ((n - i) > 0) {
+			kprintf("ALO ATA\n");
 			yield();
+		}
 	}
 	
 	putkpg(kpg);
@@ -831,8 +833,11 @@ PRIVATE ssize_t ata_write(unsigned minor, const char *buf, size_t n, off_t off)
 		off += count;
 		
 		/* Avoid starvation. */
-		if ((n - i) > 0)
+		if ((n - i) > 0) {
+
+			kprintf("ALO ATA2\n");
 			yield();
+		}
 	}
 	
 	putkpg(kpg);

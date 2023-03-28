@@ -21,7 +21,7 @@
 # Change this to zero if you wanna a
 # non-educational version of the system.
 #
-export EDUCATIONAL_KERNEL=1
+export EDUCATIONAL_KERNEL=0
 
 # Directories.
 export BINDIR   = $(CURDIR)/bin

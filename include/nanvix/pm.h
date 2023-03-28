@@ -213,6 +213,7 @@
 	EXTERN int issig(void);
 	EXTERN void pm_init(void);
 	EXTERN void sched(struct process *);
+	EXTERN void schedF(struct process *);
 
 #ifdef __NANVIX_KERNEL__
 
@@ -223,6 +224,7 @@
     EXTERN void sndsig(struct process *, int);
 	EXTERN void wakeup(struct process **);
 	EXTERN void yield(void);
+	EXTERN void yieldF(void);
 	
 	/**
 	 * @name Process memory regions
