@@ -74,7 +74,7 @@ PUBLIC void resumeF(struct process *proc)
  */
 PUBLIC void yieldF(void)
 {
-    kprintf("Entrei aqui meu amigo\n");
+    // kprintf("Entrei aqui meu amigo\n");
 	struct process *p;    /* Working process.     */
 	struct process *next; /* Next process to run. */
 	
@@ -95,7 +95,7 @@ PUBLIC void yieldF(void)
 		if ((p->alarm) && (p->alarm < ticks))
 			p->alarm = 0, sndsig(p, SIGALRM);
 	}
-	kprintf("Opa hehe\n");
+	// kprintf("Opa hehe\n");
 
 	/* Choose a process to run next. */
 	next = IDLE;
@@ -106,20 +106,16 @@ PUBLIC void yieldF(void)
             kprintf("PID: %d\n", p->pid);
             next = p;
             break;
-        } else {
-			p = p + 1;
-			kprintf("Aqui dentro: %d\n", p->pid);
 		}
+			
 
 	}
-		
-    
 
 	/* Switch to next process. */
 	next->priority = PRIO_USER;
 	next->state = PROC_RUNNING;
 	if (curr_proc != next) {
 		switch_to(next);
-        finisherF(curr_proc);
+        //finisherF(curr_proc);
 	}
 }

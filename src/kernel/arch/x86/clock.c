@@ -31,7 +31,7 @@ PUBLIC unsigned startup_time = 0;
 /*
  * Handles a timer interrupt.
  */
-PRIVATE void do_clock()
+/*PRIVATE void do_clock()
 {
 	ticks++;
 	
@@ -45,7 +45,7 @@ PRIVATE void do_clock()
     //if(curr_proc->state == PROC_ZOMBIE) kprintf("Encontramos um maldito aqui\n");
 
 	curr_proc->utime++;
-		
+*/		
 	/* Give up processor time. */
 	/*if (--curr_proc->counter == 0)
 		yield();*/
@@ -56,6 +56,7 @@ PRIVATE void do_clock()
     //    yield();
     //}
 
+/*
     if ( last_proc->pid < 3 && curr_proc->pid < 3 ){
         kprintf("LAST: %d - CURR: %d\n", last_proc->pid, curr_proc->pid );
         yield();
@@ -64,7 +65,7 @@ PRIVATE void do_clock()
         yieldF();
     }
 
-}
+}*/
 
 /*
  * Initializes the system's clock.
@@ -75,7 +76,8 @@ PUBLIC void clock_init(unsigned freq)
 	
 	kprintf("dev: initializing clock device driver");
 	
-	set_hwint(INT_CLOCK, &do_clock);
+	//set_hwint(INT_CLOCK, &do_clock);
+	//do_clock();
 	
 	freq_divisor = PIT_FREQUENCY/freq;
 	

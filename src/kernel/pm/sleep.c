@@ -74,6 +74,7 @@ PUBLIC void sleep(struct process **chain, int priority)
 	curr_proc->priority = priority;
 	curr_proc->chain = chain;
 	
+	//kprintf("no Sleep aqui %d\n", curr_proc->pid);
 	yield();
 }
 

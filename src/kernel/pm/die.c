@@ -77,7 +77,7 @@ PUBLIC void die(int status)
 		}
 	}
 	
-	/* init adotps process in the same group. */
+	/* init adopts process in the same group. */
 	if (curr_proc->pgrp == curr_proc)
 	{
 		for (p = FIRST_PROC; p <= LAST_PROC; p++)
@@ -108,7 +108,8 @@ PUBLIC void die(int status)
 	
 	sndsig(curr_proc->father, SIGCHLD);
 	
-	yield();
+	kprintf("No die aqui \n");
+	yieldF();
 }
 
 /**
