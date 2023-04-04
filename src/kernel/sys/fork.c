@@ -154,12 +154,25 @@ found:
 	proc->alarm = 0;
 	proc->next = NULL;
 	proc->chain = NULL;
-	kprintf("%d\n",proc->pid);
+	//kprintf("%d\n",proc->pid);
 	sched(proc);
 
 	curr_proc->nchildren++;
 	
 	nprocs++;
+
+	/* Name */
+	int size = kstrlen(curr_proc->name);
+	char name    [26];
+	kstrcpy(name, curr_proc->name);
+	int len = 20 - size;
+
+	for(i=size; i<len+size-1; i++)
+		*(name+i) = ' ';
+
+	*(name+i) = '\0';
+
+	kprintf("PID no fork: %d e nome: %s\n", proc->pid, name);
 
 	return (proc->pid);
 

@@ -103,7 +103,7 @@ PUBLIC void yieldF(void)
 	{
 		
 		if( p->status == PROC_READY ){
-            kprintf("PID: %d\n", p->pid);
+            //kprintf("PID: %d\n", p->pid);
             next = p;
             break;
 		}

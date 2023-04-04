@@ -108,8 +108,8 @@ PUBLIC void die(int status)
 	
 	sndsig(curr_proc->father, SIGCHLD);
 	
-	kprintf("No die aqui \n");
-	yieldF();
+	//kprintf("No die aqui \n");
+	yield();
 }
 
 /**
@@ -123,4 +123,5 @@ PUBLIC void bury(struct process *proc)
 	proc->state = PROC_DEAD;
 	proc->father->nchildren--;
 	nprocs--;
+	yield();
 }

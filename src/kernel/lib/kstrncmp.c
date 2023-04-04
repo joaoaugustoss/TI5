@@ -34,6 +34,8 @@ PUBLIC int kstrncmp(const char *str1, const char *str2, size_t n)
 	/* Compare strings. */
 	while (n-- > 0)
 	{
+		// test e tsh
+
 		/* Strings differ. */
 		if (*str1 != *str2)
 			break;

@@ -27,7 +27,7 @@
 
 /**
  * @brief Schedules a process to execution.
- * 
+ *
  * @param proc Process to be scheduled.
  */
 PUBLIC void sched(struct process *proc)
@@ -48,13 +48,13 @@ PUBLIC void stop(void)
 
 /**
  * @brief Resumes a process.
- * 
+ *
  * @param proc Process to be resumed.
- * 
+ *
  * @note The process must stopped to be resumed.
  */
 PUBLIC void resume(struct process *proc)
-{	
+{
 	/* Resume only if process has stopped. */
 	if (proc->state == PROC_STOPPED)
 		sched(proc);
@@ -65,61 +65,119 @@ PUBLIC void resume(struct process *proc)
  */
 PUBLIC void yield(void)
 {
-
-	struct process *p;    /* Working process.     */
+	struct process *p;	  /* Working process.     */
 	struct process *next; /* Next process to run. */
-	
-	/* Re-schedule process for execution. */
-	if (curr_proc->state == PROC_RUNNING)
-		sched(curr_proc);
 
-	/* Remember this process. */
-	last_proc = curr_proc;
+	/* Name */
+	int size = kstrlen(curr_proc->name);
+	char name[26];
+	kstrcpy(name, curr_proc->name);
+	int len = 20 - size;
+	int i = 0;
+	for (i = size; i < len + size - 1; i++)
+		*(name + i) = ' ';
 
-	/* Check alarm. */
-	for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	*(name + i) = '\0';
+
+	kprintf("kstrncmp %d, nome %s\n", kstrncmp(name, "test", 4), name);
+	if (kstrncmp(name, "test", 4) == 32)
 	{
-		/* Skip invalid processes. */
-		if (!IS_VALID(p))
-			continue;
-		
-		/* Alarm has expired. */
-		if ((p->alarm) && (p->alarm < ticks))
-			p->alarm = 0, sndsig(p, SIGALRM);
-	}
-
-	/* Choose a process to run next. */
-	next = IDLE;
-	for (p = FIRST_PROC; p <= LAST_PROC; p++)
-	{
-		/* Skip non-ready process. */
-		if (p->state != PROC_READY)
-			continue;
-		
-		/*
-		 * Process with higher
-		 * waiting time found.
-		 */
-		if (p->counter > next->counter)
+		for (p = FIRST_PROC; p <= LAST_PROC; p++)
 		{
-			next->counter++;
-			next = p;
+			if (p->state == PROC_READY)
+				kprintf("%d, ", p->pid);
 		}
-			
-		/*
-		 * Increment waiting
-		 * time of process.
-		 */
-		else
-			p->counter++;
-	}
+		kprintf("\n");
+		/* Finishing process. */
+
+		/* Remember this process. */
+		last_proc = curr_proc;
+
+		/* Check alarm. */
+		for (p = FIRST_PROC; p <= LAST_PROC; p++)
+		{
+			/* Skip invalid processes. */
+			if (!IS_VALID(p))
+				continue;
+
+			/* Alarm has expired. */
+			if ((p->alarm) && (p->alarm < ticks))
+				p->alarm = 0, sndsig(p, SIGALRM);
+		}
+		// kprintf("Opa hehe\n");
+		// kprintf("Status do joao: %d e name %s\n", curr_proc->status, name);
+
 		
+		/* Choose a process to run next. */
+		next = IDLE;
+		for (p = FIRST_PROC; p <= LAST_PROC; p++)
+		{
+			// kprintf("PID no for: %d\n", p->pid);
+			if (p->status == PROC_READY)
+			{
+				// kprintf("Status do joao: %d\n", p->status);
+				//  kprintf("PID: %d\n", p->pid);
+				next = p;
+				break;
+			}
+		}
+	}
+	else
+	{
+		/* Re-schedule process for execution. */
+		if (curr_proc->state == PROC_RUNNING)
+			sched(curr_proc);
+
+		/* Remember this process. */
+		last_proc = curr_proc;
+
+		/* Check alarm. */
+		for (p = FIRST_PROC; p <= LAST_PROC; p++)
+		{
+			/* Skip invalid processes. */
+			if (!IS_VALID(p))
+				continue;
+
+			/* Alarm has expired. */
+			if ((p->alarm) && (p->alarm < ticks))
+				p->alarm = 0, sndsig(p, SIGALRM);
+		}
+
+		/* Choose a process to run next. */
+		next = IDLE;
+		for (p = FIRST_PROC; p <= LAST_PROC; p++)
+		{
+			/* Skip non-ready process. */
+			if (p->state != PROC_READY)
+				continue;
+
+			/*
+			 * Process with higher
+			 * waiting time found.
+			 */
+			if (p->counter > next->counter)
+			{
+				next->counter++;
+				next = p;
+			}
+
+			/*
+			 * Increment waiting
+			 * time of process.
+			 */
+			else
+				p->counter++;
+		}
+
+		next->counter = PROC_QUANTUM;
+	}
 
 	/* Switch to next process. */
 	next->priority = PRIO_USER;
 	next->state = PROC_RUNNING;
-	next->counter = PROC_QUANTUM;
-	if (curr_proc != next) {
+	if (curr_proc != next)
+	{
 		switch_to(next);
+		// finisherF(curr_proc);
 	}
 }
