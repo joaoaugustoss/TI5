@@ -68,109 +68,53 @@ PUBLIC void yield(void)
 	struct process *p;	  /* Working process.     */
 	struct process *next; /* Next process to run. */
 
-	/* Name */
-	int size = kstrlen(curr_proc->name);
-	char name[26];
-	kstrcpy(name, curr_proc->name);
-	int len = 20 - size;
-	int i = 0;
-	for (i = size; i < len + size - 1; i++)
-		*(name + i) = ' ';
 
-	*(name + i) = '\0';
+	/* Re-schedule process for execution. */
+	if (curr_proc->state == PROC_RUNNING)
+		sched(curr_proc);
 
-	kprintf("kstrncmp %d, nome %s\n", kstrncmp(name, "test", 4), name);
-	if (kstrncmp(name, "test", 4) == 32)
+	/* Remember this process. */
+	last_proc = curr_proc;
+
+	/* Check alarm. */
+	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
-		for (p = FIRST_PROC; p <= LAST_PROC; p++)
-		{
-			if (p->state == PROC_READY)
-				kprintf("%d, ", p->pid);
-		}
-		kprintf("\n");
-		/* Finishing process. */
+		/* Skip invalid processes. */
+		if (!IS_VALID(p))
+			continue;
 
-		/* Remember this process. */
-		last_proc = curr_proc;
-
-		/* Check alarm. */
-		for (p = FIRST_PROC; p <= LAST_PROC; p++)
-		{
-			/* Skip invalid processes. */
-			if (!IS_VALID(p))
-				continue;
-
-			/* Alarm has expired. */
-			if ((p->alarm) && (p->alarm < ticks))
-				p->alarm = 0, sndsig(p, SIGALRM);
-		}
-		// kprintf("Opa hehe\n");
-		// kprintf("Status do joao: %d e name %s\n", curr_proc->status, name);
-
-		
-		/* Choose a process to run next. */
-		next = IDLE;
-		for (p = FIRST_PROC; p <= LAST_PROC; p++)
-		{
-			// kprintf("PID no for: %d\n", p->pid);
-			if (p->status == PROC_READY)
-			{
-				// kprintf("Status do joao: %d\n", p->status);
-				//  kprintf("PID: %d\n", p->pid);
-				next = p;
-				break;
-			}
-		}
+		/* Alarm has expired. */
+		if ((p->alarm) && (p->alarm < ticks))
+			p->alarm = 0, sndsig(p, SIGALRM);
 	}
-	else
+
+	/* Choose a process to run next. */
+	next = IDLE;
+	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
-		/* Re-schedule process for execution. */
-		if (curr_proc->state == PROC_RUNNING)
-			sched(curr_proc);
+		/* Skip non-ready process. */
+		if (p->state != PROC_READY)
+			continue;
 
-		/* Remember this process. */
-		last_proc = curr_proc;
-
-		/* Check alarm. */
-		for (p = FIRST_PROC; p <= LAST_PROC; p++)
+		/*
+			* Process with higher
+			* waiting time found.
+			*/
+		if (p->size >= next->size)
 		{
-			/* Skip invalid processes. */
-			if (!IS_VALID(p))
-				continue;
-
-			/* Alarm has expired. */
-			if ((p->alarm) && (p->alarm < ticks))
-				p->alarm = 0, sndsig(p, SIGALRM);
+			//next->counter++;
+			next = p;
 		}
 
-		/* Choose a process to run next. */
-		next = IDLE;
-		for (p = FIRST_PROC; p <= LAST_PROC; p++)
-		{
-			/* Skip non-ready process. */
-			if (p->state != PROC_READY)
-				continue;
-
-			/*
-			 * Process with higher
-			 * waiting time found.
-			 */
-			if (p->counter > next->counter)
-			{
-				next->counter++;
-				next = p;
-			}
-
-			/*
-			 * Increment waiting
-			 * time of process.
-			 */
-			else
-				p->counter++;
-		}
-
-		next->counter = PROC_QUANTUM;
+		/*
+			* Increment waiting
+			* time of process.
+			*/
+		//else
+			//p->counter++;
 	}
+
+	//next->counter = PROC_QUANTUM;
 
 	/* Switch to next process. */
 	next->priority = PRIO_USER;

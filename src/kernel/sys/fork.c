@@ -161,19 +161,6 @@ found:
 	
 	nprocs++;
 
-	/* Name */
-	int size = kstrlen(curr_proc->name);
-	char name    [26];
-	kstrcpy(name, curr_proc->name);
-	int len = 20 - size;
-
-	for(i=size; i<len+size-1; i++)
-		*(name+i) = ' ';
-
-	*(name+i) = '\0';
-
-	kprintf("PID no fork: %d e nome: %s\n", proc->pid, name);
-
 	return (proc->pid);
 
 error1:
