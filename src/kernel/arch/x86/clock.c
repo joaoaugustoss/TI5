@@ -21,6 +21,7 @@
 #include <nanvix/hal.h>
 #include <nanvix/klib.h>
 #include <nanvix/pm.h>
+#include <nanvix/clock.h>
 
 /* Clock ticks since system initialization. */
 PUBLIC unsigned ticks = 0;
@@ -34,6 +35,7 @@ PUBLIC unsigned startup_time = 0;
 PRIVATE void do_clock()
 {
 	ticks++;
+	//kprintf("%d\n", CURRENT_TIME);
 	
 	if (KERNEL_RUNNING(curr_proc))
 	{
@@ -42,28 +44,17 @@ PRIVATE void do_clock()
 	}
 	
 
-    //if(curr_proc->state == PROC_ZOMBIE) kprintf("Encontramos um maldito aqui\n");
+    //if(curr_proc->state == PROC_RUNNING) kprintf("Rodando\n");
 
 	curr_proc->utime++;
 	
 	/* Give up processor time. */
-	if (--curr_proc->counter == 0)
-		yield();
+	if (--curr_proc->counter == 0) yield();
+}
 
-    //if ( (last_proc->state == PROC_RUNNING) || last_proc->state == PROC_READY  ) {
-    //    kprintf("Interessante, o status atual é: %d\n", last_proc->state);
-    //} else {
-    //    yield();
-    //}
 
-	/*
-    if ( last_proc->pid < 3 && curr_proc->pid < 3 ){
-        kprintf("LAST: %d - CURR: %d\n", last_proc->pid, curr_proc->pid );
-        yield();
-    } else {
-        kprintf("Opa, eai!\n");
-        yieldF();
-    }*/
+PUBLIC unsigned getTick(void){
+	return ticks;
 }
 
 /*
@@ -76,7 +67,6 @@ PUBLIC void clock_init(unsigned freq)
 	kprintf("dev: initializing clock device driver");
 	
 	set_hwint(INT_CLOCK, &do_clock);
-	//do_clock();
 	
 	freq_divisor = PIT_FREQUENCY/freq;
 	

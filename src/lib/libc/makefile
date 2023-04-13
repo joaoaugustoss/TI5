@@ -20,6 +20,7 @@
 # C source files.
 C_SRC = $(wildcard *.c)           \
       $(wildcard assert/*.c)      \
+      $(wildcard clock/*.c)      \
       $(wildcard ctype/*.c)       \
       $(wildcard dirent/*.c)      \
       $(wildcard errno/*.c)       \

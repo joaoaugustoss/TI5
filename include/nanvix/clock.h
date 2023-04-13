@@ -33,6 +33,8 @@
 	 */
 	EXTERN void clock_init(unsigned freq);
 
+	EXTERN unsigned getTick(void);
+
 	/* Ticks since system initialization. */
 	EXTERN unsigned ticks;
 	

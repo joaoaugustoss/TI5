@@ -20,6 +20,7 @@
 
 #include <assert.h>
 #include <nanvix/config.h>
+#include <nanvix/clock.h>
 #include <sys/times.h>
 #include <sys/wait.h>
 #include <sys/sem.h>
@@ -228,6 +229,10 @@ static void work_io(void)
  */
 static int sched_test0(void)
 {
+	clock_t t0, t1;    /* Elapsed times.      */
+	struct tms timing;
+	//clock_init(100);
+	t0 = times(&timing);
 	pid_t pid;
 	
 	pid = fork();
@@ -244,6 +249,8 @@ static int sched_test0(void)
 	}
 	
 	wait(NULL);
+	t1 = times(&timing);
+	printf("Test 0\n Started: %d\tEnded: %d\t Elapsed time: %d\n", t0, t1, t1-t0);
 	
 	return (0);
 }
@@ -258,6 +265,10 @@ static int sched_test0(void)
  */
 static int sched_test1(void)
 {
+	clock_t t0, t1;    /* Elapsed times.      */
+	struct tms timing;
+	//clock_init(100);
+	t0 = times(&timing);
 	pid_t pid;
 		
 	pid = fork();
@@ -282,6 +293,8 @@ static int sched_test1(void)
 	}
 		
 	wait(NULL);
+	t1 = times(&timing);
+	printf("Test 1\n Started: %d\tEnded: %d\t Elapsed time: %d\n", t0, t1, t1-t0);
 	
 	return (0);
 }
@@ -295,6 +308,10 @@ static int sched_test1(void)
  */
 static int sched_test2(void)
 {
+	clock_t t0, t1;    /* Elapsed times.      */
+	struct tms timing;
+	//clock_init(100);
+	t0 = times(&timing);
 	pid_t pid[4];
 	
 	for (int i = 0; i < 4; i++)
@@ -335,6 +352,9 @@ static int sched_test2(void)
 			wait(NULL);
 		}
 	}
+
+	t1 = times(&timing);
+	printf("Test 2\n Started: %d\tEnded: %d\t Elapsed time: %d\n", t0, t1, t1-t0);
 	
 	return (0);
 }
@@ -348,6 +368,10 @@ static int sched_test2(void)
  */
 static int sched_test3(void)
 {
+	clock_t t0, t1;    /* Elapsed times.      */
+	struct tms timing;
+	//clock_init(100);
+	t0 = times(&timing);
 	pid_t child;
 	pid_t father;
 
@@ -366,6 +390,9 @@ static int sched_test3(void)
 	if (getpid() != father)
 		_exit(EXIT_SUCCESS);
 
+
+	t1 = times(&timing);
+	printf("Test 3\n Started: %d\tEnded: %d\t Elapsed time: %d\n", t0, t1, t1-t0);
 	return (0);
 }
 
