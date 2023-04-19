@@ -250,7 +250,7 @@ static int sched_test0(void)
 	
 	wait(NULL);
 	t1 = times(&timing);
-	printf("Test 0\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0/100, t1/100, (t1-t0)/100);
+	printf("Test 0\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
 	
 	return (0);
 }
@@ -294,7 +294,7 @@ static int sched_test1(void)
 		
 	wait(NULL);
 	t1 = times(&timing);
-	printf("Test 1\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0/100, t1/100, (t1-t0)/100);
+	printf("Test 1\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
 	
 	return (0);
 }
@@ -354,7 +354,7 @@ static int sched_test2(void)
 	}
 
 	t1 = times(&timing);
-	printf("Test 2\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0/100, t1/100, (t1-t0)/100);
+	printf("Test 2\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
 	
 	return (0);
 }
@@ -392,7 +392,7 @@ static int sched_test3(void)
 
 
 	t1 = times(&timing);
-	printf("Test 3\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0/100, t1/100, (t1-t0)/100);
+	printf("Test 3\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
 	return (0);
 }
 
@@ -679,7 +679,7 @@ int main(int argc, char **argv)
 			printf("  scheduler stress   [%s]\n",
 				(!sched_test2() && !sched_test3()) ? "PASSED" : "FAILED");
 			t1 = times(&timing);
-			printf("Test Sched\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0/100, t1/100, (t1-t0)/100);
+			printf("Test Sched\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
 		}
 		
 		/* IPC test. */
