@@ -807,7 +807,7 @@ int main(int argc, char **argv)
 		t0 = times(&timing);
 		/* Print prompt character. */
 		if (shflags & SH_INTERACTIVE)
-			printf("%d ", (myuid == 0) ? t0 : t0);
+			printf("# %d # ", (myuid == 0) ? t0 : t0);
 	
 		/* Read command line. */
 		switch (readline(line, LINELEN, input))
