@@ -46,7 +46,7 @@ PRIVATE void do_clock()
 	curr_proc->utime++;
 	
 	/* Give up processor time. */
-	//if (--curr_proc->counter == 0) yield();
+	if (--curr_proc->counter == 0) yield();
 }
 
 /*

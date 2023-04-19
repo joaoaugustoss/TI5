@@ -236,7 +236,6 @@ static int sched_test0(void)
 	pid_t pid;
 	
 	pid = fork();
-	fork();
 	
 	/* Failed to fork(). */
 	if (pid < 0)
@@ -271,9 +270,13 @@ static int sched_test1(void)
 	//clock_init(100);
 	t0 = times(&timing);
 	pid_t pid;
+	pid_t child;
+	pid_t father;
+
+	father = getpid();
 		
 	pid = fork();
-	fork();
+	pid = fork();
 
 	/* Failed to fork(). */
 	if (pid < 0)
@@ -291,10 +294,15 @@ static int sched_test1(void)
 	{
 		nice(2*NZERO);
 		work_io();
-		_exit(EXIT_SUCCESS);
+		//_exit(EXIT_SUCCESS);
 	}
 		
-	wait(NULL);
+	while ((child = wait(NULL)) >= 0)
+		/* noop. */;
+	
+	/* Die. */
+	if (getpid() != father)
+		_exit(EXIT_SUCCESS);
 	t1 = times(&timing);
 	printf("Test 1\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
 	
