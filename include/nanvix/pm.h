@@ -73,7 +73,7 @@
 	 * @name Process parameters
 	 */
 	/**@{*/
-	#define PROC_QUANTUM 0 /**< Quantum.                  */
+	#define PROC_QUANTUM 10 /**< Quantum.                  */
 	#define NR_PREGIONS   4 /**< Number of memory regions. */
 	/**@}*/
 	

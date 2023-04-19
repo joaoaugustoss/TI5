@@ -154,6 +154,7 @@ found:
 	proc->alarm = 0;
 	proc->next = NULL;
 	proc->chain = NULL;
+	proc->counter = PROC_QUANTUM;
 	//kprintf("%d\n",proc->pid);
 	sched(proc);
 

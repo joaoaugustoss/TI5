@@ -236,6 +236,7 @@ static int sched_test0(void)
 	pid_t pid;
 	
 	pid = fork();
+	fork();
 	
 	/* Failed to fork(). */
 	if (pid < 0)
@@ -272,7 +273,8 @@ static int sched_test1(void)
 	pid_t pid;
 		
 	pid = fork();
-	
+	fork();
+
 	/* Failed to fork(). */
 	if (pid < 0)
 		return (-1);
@@ -312,9 +314,10 @@ static int sched_test2(void)
 	struct tms timing;
 	//clock_init(100);
 	t0 = times(&timing);
+	int tamanho = 4;
 	pid_t pid[4];
 	
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < tamanho; i++)
 	{
 		pid[i] = fork();
 	
@@ -341,7 +344,7 @@ static int sched_test2(void)
 		}
 	}
 	
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < tamanho; i++)
 	{
 		if (i & 1)
 			wait(NULL);
