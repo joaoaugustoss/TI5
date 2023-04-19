@@ -23,14 +23,13 @@
 #include <nanvix/hal.h>
 #include <nanvix/pm.h>
 #include <signal.h>
-#include <nanvix/klib.h>
 
 /**
  * @brief Schedules a process to execution.
- *
+ * 
  * @param proc Process to be scheduled.
  */
-PUBLIC void schedS(struct process *proc)
+PUBLIC void schedR(struct process *proc)
 {
 	proc->state = PROC_READY;
 	proc->counter = 0;
@@ -39,7 +38,7 @@ PUBLIC void schedS(struct process *proc)
 /**
  * @brief Stops the current running process.
  */
-PUBLIC void stopS(void)
+PUBLIC void stopR(void)
 {
 	curr_proc->state = PROC_STOPPED;
 	sndsig(curr_proc->father, SIGCHLD);
@@ -48,13 +47,13 @@ PUBLIC void stopS(void)
 
 /**
  * @brief Resumes a process.
- *
+ * 
  * @param proc Process to be resumed.
- *
+ * 
  * @note The process must stopped to be resumed.
  */
-PUBLIC void resumeS(struct process *proc)
-{
+PUBLIC void resumeR(struct process *proc)
+{	
 	/* Resume only if process has stopped. */
 	if (proc->state == PROC_STOPPED)
 		sched(proc);
@@ -63,11 +62,10 @@ PUBLIC void resumeS(struct process *proc)
 /**
  * @brief Yields the processor.
  */
-PUBLIC void yieldS(void)
+PUBLIC void yieldR(void)
 {
-	struct process *p;	  /* Working process.     */
+	struct process *p;    /* Working process.     */
 	struct process *next; /* Next process to run. */
-
 
 	/* Re-schedule process for execution. */
 	if (curr_proc->state == PROC_RUNNING)
@@ -82,7 +80,7 @@ PUBLIC void yieldS(void)
 		/* Skip invalid processes. */
 		if (!IS_VALID(p))
 			continue;
-
+		
 		/* Alarm has expired. */
 		if ((p->alarm) && (p->alarm < ticks))
 			p->alarm = 0, sndsig(p, SIGALRM);
@@ -95,35 +93,29 @@ PUBLIC void yieldS(void)
 		/* Skip non-ready process. */
 		if (p->state != PROC_READY)
 			continue;
-
+		
 		/*
-			* Process with higher
-			* waiting time found.
-			*/
-		if (p->size >= next->size)
+		 * Process with higher
+		 * waiting time found.
+		 */
+		if (p->counter > next->counter)
 		{
-			//kprintf("%d\t%d\n", p->pid, p->size);
-			kprintf("%d\n", getTick());
-			//next->counter++;
+			next->counter++;
 			next = p;
 		}
-
+			
 		/*
-			* Increment waiting
-			* time of process.
-			*/
-		//else
-			//p->counter++;
+		 * Increment waiting
+		 * time of process.
+		 */
+		else
+			p->counter++;
 	}
-
-	//next->counter = PROC_QUANTUM;
-
+	
 	/* Switch to next process. */
 	next->priority = PRIO_USER;
 	next->state = PROC_RUNNING;
+	next->counter = PROC_QUANTUM;
 	if (curr_proc != next)
-	{
 		switch_to(next);
-		// finisherF(curr_proc);
-	}
 }

@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/times.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -800,9 +801,13 @@ int main(int argc, char **argv)
 	/* Read and interpret commands. */
 	while (1)
 	{
+		clock_t t0;    /* Elapsed times.      */
+		struct tms timing;
+		//clock_init(100);
+		t0 = times(&timing);
 		/* Print prompt character. */
 		if (shflags & SH_INTERACTIVE)
-			printf("%c ", (myuid == 0) ? '#' : '%');
+			printf("%d ", (myuid == 0) ? t0 : t0);
 	
 		/* Read command line. */
 		switch (readline(line, LINELEN, input))

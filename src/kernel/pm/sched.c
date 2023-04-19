@@ -23,10 +23,11 @@
 #include <nanvix/hal.h>
 #include <nanvix/pm.h>
 #include <signal.h>
+#include <nanvix/klib.h>
 
 /**
  * @brief Schedules a process to execution.
- * 
+ *
  * @param proc Process to be scheduled.
  */
 PUBLIC void sched(struct process *proc)
@@ -47,13 +48,13 @@ PUBLIC void stop(void)
 
 /**
  * @brief Resumes a process.
- * 
+ *
  * @param proc Process to be resumed.
- * 
+ *
  * @note The process must stopped to be resumed.
  */
 PUBLIC void resume(struct process *proc)
-{	
+{
 	/* Resume only if process has stopped. */
 	if (proc->state == PROC_STOPPED)
 		sched(proc);
@@ -64,8 +65,9 @@ PUBLIC void resume(struct process *proc)
  */
 PUBLIC void yield(void)
 {
-	struct process *p;    /* Working process.     */
+	struct process *p;	  /* Working process.     */
 	struct process *next; /* Next process to run. */
+
 
 	/* Re-schedule process for execution. */
 	if (curr_proc->state == PROC_RUNNING)
@@ -80,7 +82,7 @@ PUBLIC void yield(void)
 		/* Skip invalid processes. */
 		if (!IS_VALID(p))
 			continue;
-		
+
 		/* Alarm has expired. */
 		if ((p->alarm) && (p->alarm < ticks))
 			p->alarm = 0, sndsig(p, SIGALRM);
@@ -93,29 +95,35 @@ PUBLIC void yield(void)
 		/* Skip non-ready process. */
 		if (p->state != PROC_READY)
 			continue;
-		
+
 		/*
-		 * Process with higher
-		 * waiting time found.
-		 */
-		if (p->counter > next->counter)
+			* Process with higher
+			* waiting time found.
+			*/
+		if (p->size >= next->size)
 		{
-			next->counter++;
+			//kprintf("%d\t%d\n", p->pid, p->size);
+			//kprintf("%d\n", getTick());
+			//next->counter++;
 			next = p;
 		}
-			
+
 		/*
-		 * Increment waiting
-		 * time of process.
-		 */
-		else
-			p->counter++;
+			* Increment waiting
+			* time of process.
+			*/
+		//else
+			//p->counter++;
 	}
-	
+
+	//next->counter = PROC_QUANTUM;
+
 	/* Switch to next process. */
 	next->priority = PRIO_USER;
 	next->state = PROC_RUNNING;
-	next->counter = PROC_QUANTUM;
 	if (curr_proc != next)
+	{
 		switch_to(next);
+		// finisherF(curr_proc);
+	}
 }
