@@ -35,7 +35,6 @@ PUBLIC unsigned startup_time = 0;
 PRIVATE void do_clock()
 {
 	ticks++;
-	//kprintf("%d\n", CURRENT_TIME);
 	
 	if (KERNEL_RUNNING(curr_proc))
 	{
@@ -44,17 +43,10 @@ PRIVATE void do_clock()
 	}
 	
 
-    //if(curr_proc->state == PROC_RUNNING) kprintf("Rodando\n");
-
 	curr_proc->utime++;
 	
 	/* Give up processor time. */
 	//if (--curr_proc->counter == 0) yield();
-}
-
-
-PUBLIC unsigned getTick(void){
-	return ticks;
 }
 
 /*

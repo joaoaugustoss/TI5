@@ -102,21 +102,9 @@ PUBLIC void yield(void)
 			*/
 		if (p->size >= next->size)
 		{
-			//kprintf("%d\t%d\n", p->pid, p->size);
-			//kprintf("%d\n", getTick());
-			//next->counter++;
 			next = p;
 		}
-
-		/*
-			* Increment waiting
-			* time of process.
-			*/
-		//else
-			//p->counter++;
 	}
-
-	//next->counter = PROC_QUANTUM;
 
 	/* Switch to next process. */
 	next->priority = PRIO_USER;
@@ -124,6 +112,5 @@ PUBLIC void yield(void)
 	if (curr_proc != next)
 	{
 		switch_to(next);
-		// finisherF(curr_proc);
 	}
 }

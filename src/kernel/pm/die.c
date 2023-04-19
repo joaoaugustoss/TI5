@@ -107,8 +107,6 @@ PUBLIC void die(int status)
 	curr_proc->alarm = 0;
 	
 	sndsig(curr_proc->father, SIGCHLD);
-	
-	//kprintf("No die aqui \n");
 	yield();
 }
 

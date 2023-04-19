@@ -123,7 +123,6 @@ PRIVATE ssize_t ramdisk_read(unsigned minor, char *buf, size_t n, off_t off)
 		
 		/* Avoid starvation. */
 		if (n > 0) {
-			kprintf("ALO RAMDISK2\n");
 			yield();
 		}
 	}
