@@ -23,6 +23,10 @@
 #include <nanvix/hal.h>
 #include <nanvix/pm.h>
 #include <signal.h>
+#include <nanvix/klib.h>
+#include <sys/times.h>
+#include <sys/types.h>
+#include <nanvix/syscall.h>
 
 /**
  * @brief Schedules a process to execution.
@@ -66,6 +70,9 @@ PUBLIC void yield(void)
 {
 	struct process *p;    /* Working process.     */
 	struct process *next; /* Next process to run. */
+	int t0, t1;
+	struct tms timing;
+
 
 	/* Re-schedule process for execution. */
 	if (curr_proc->state == PROC_RUNNING)
@@ -77,13 +84,14 @@ PUBLIC void yield(void)
 	/* Check alarm. */
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
-		/* Skip invalid processes. */
+		// Skip invalid processes. 
 		if (!IS_VALID(p))
 			continue;
-		
-		/* Alarm has expired. */
+
+		// Alarm has expired. 
 		if ((p->alarm) && (p->alarm < ticks))
 			p->alarm = 0, sndsig(p, SIGALRM);
+		
 	}
 
 	/* Choose a process to run next. */
@@ -110,12 +118,18 @@ PUBLIC void yield(void)
 		 */
 		else
 			p->counter++;
+			//p->counter = PROC_QUANTUM;
 	}
 	
 	/* Switch to next process. */
 	next->priority = PRIO_USER;
 	next->state = PROC_RUNNING;
 	next->counter = PROC_QUANTUM;
-	if (curr_proc != next)
+	if (curr_proc != next) {
+		t0 = sys_times(&timing);
 		switch_to(next);
+		t1 = sys_times(&timing);
+
+		if(curr_proc->pid > 2 && curr_proc->father->pid == 3) kprintf("Elapsed time = %d - %d = %d", t1 , t0, (t1 - t0));
+	}
 }

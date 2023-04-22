@@ -184,7 +184,7 @@ static void work_cpu(void)
 	c = 0;
 		
 	/* Perform some computation. */
-	for (int i = 0; i < 4096; i++)
+	for (int i = 0; i < 10000; i++)
 	{
 		int a = 1 + i;
 		for (int b = 2; b < i; b++)
@@ -235,20 +235,50 @@ static int sched_test0(void)
 	t0 = times(&timing);
 	pid_t pid;
 	
+	//pid = fork();
+	
+	/* Failed to fork(). */
+	/*if (pid < 0)
+		return (-1);
+	*/
+	/* Child process. */
+	/*else if (pid == 0)
+	{
+		work_cpu();
+		_exit(EXIT_SUCCESS);
+	}
+	
+	wait(NULL);*/
+
+	pid_t child;
+	pid_t father;
+
+	father = getpid();
+	
+	pid = fork();
 	pid = fork();
 	
 	/* Failed to fork(). */
 	if (pid < 0)
 		return (-1);
 	
-	/* Child process. */
-	else if (pid == 0)
+	/* Parent process. */
+	else if (pid > 0)
 	{
 		work_cpu();
-		_exit(EXIT_SUCCESS);
 	}
 	
-	wait(NULL);
+	/* Child process. */
+	else
+	{
+		work_io();
+		_exit(EXIT_SUCCESS);
+	}
+		
+	while ((child = wait(NULL)) >= 0)
+	if (getpid() != father)
+		_exit(EXIT_SUCCESS);
+
 	t1 = times(&timing);
 	printf("Test 0\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
 	
@@ -294,7 +324,7 @@ static int sched_test1(void)
 	{
 		nice(2*NZERO);
 		work_io();
-		//_exit(EXIT_SUCCESS);
+		_exit(EXIT_SUCCESS);
 	}
 		
 	while ((child = wait(NULL)) >= 0)

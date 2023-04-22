@@ -24,6 +24,7 @@
 #include <nanvix/mm.h>
 #include <nanvix/pm.h>
 #include <signal.h>
+#include <nanvix/klib.h>
 
 /**
  * @brief Is the system shutting down?
@@ -38,7 +39,7 @@ PUBLIC int shutting_down = 0;
 PUBLIC void die(int status)
 {
 	struct process *p;
-	
+	//kprintf("Vamos ver um trem (die). %d\n", curr_proc->counter);	
 	/* Shall not occour. */
 	if (curr_proc == IDLE)
 		kpanic("idle process dying");

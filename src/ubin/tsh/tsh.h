@@ -34,7 +34,7 @@
 		"Copyright(C) 2011-2014 Pedro H. Penna <pedrohenriquepenna@gmail.com>\n"
 
 	/* Maximum line length. */
-	#define LINELEN 256
+	#define LINELEN 250
 	
 	/**
 	 * @brief History size.

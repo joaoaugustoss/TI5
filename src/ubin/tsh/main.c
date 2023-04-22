@@ -34,6 +34,8 @@
 #include <termios.h>
 #include <ctype.h>
 
+#include <nanvix/pm.h>
+
 #include "builtin.h"
 #include "tsh.h"
 #include "history.h"
@@ -807,7 +809,7 @@ int main(int argc, char **argv)
 		t0 = times(&timing);
 		/* Print prompt character. */
 		if (shflags & SH_INTERACTIVE)
-			printf("# %d # ", (myuid == 0) ? t0 : t0);
+			printf("# %d # %d ", (myuid == 0) ? t0 : t0, PROC_QUANTUM);
 	
 		/* Read command line. */
 		switch (readline(line, LINELEN, input))
