@@ -5,24 +5,25 @@
 #include <string.h>
 
 int main(){
-	pid_t	pid1;
+	pid_t	pid1 = 0;
 	int		status, foo = 0;
 
-	pid1 = fork(); // processo 1: Oi processo2 : Tchau 
+	//pid1 = fork(); // processo 1: Oi processo2 : Tchau 
 
 	if ( pid1 == 0 ){
 		printf("Child process 1 (PID %d)\n", getpid());
 		foo = 1;
 		printf("Fodasse %d\n", foo); // 1
 		
-		/*char *arg[] = { "./codeToBeRun.o\0" "1\0", NULL };
-		printf("Passei por aqui %s - %d\n", arg[0], strlen(arg[0]));
+		char *const arg[] = { "teste", NULL };
+		printf("Passei por aqui1 %s - %d\n", arg[0], strlen(arg[0]));
 
-		char *path = " ";
+		char *path = "src/ubin/teste/teste2.c\0";
 		strcpy(path, arg[0]);
-		printf("Passei por aqui %s - %s\n", path, path[strlen(path)]);
+		//printf("Passei por aqui2 %s - %s\n", path, path[strlen(path)]);
+		//printf("PORRAAA\n");
 
-		if(path[strlen(path)] == '\0') { 
+		/*if(path[strlen(path)] == '\0') { 
 			int size = strlen(path);
 			printf("Vasquinho legalzinho fofinho\n");
 			for(int i = 0; i < size; i++) {
@@ -32,12 +33,13 @@ int main(){
 			printf("Terminado");
 		} else {
 			printf("Como amo minha vida hahahahahaha\n");
-		}
+		}*/
 
 		execvp(path, arg);
+		printf("porraaa\n");
 
 		printf("ArrozDeu erro nessa caceta cara\n");		
-		exit(1);*/
+		exit(1);
 
 		exit(0);
 	}

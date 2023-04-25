@@ -84,7 +84,7 @@ found:
 		/* Process region not in use. */
 		if (preg->reg == NULL)
 			continue;	
-			
+		//kprintf("preg->reg->size %d\n", preg->reg->size);
 		lockreg(preg->reg);
 		reg = dupreg(preg->reg);
 		unlockreg(preg->reg);
