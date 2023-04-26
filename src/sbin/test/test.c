@@ -231,54 +231,24 @@ static int sched_test0(void)
 {
 	clock_t t0, t1;    /* Elapsed times.      */
 	struct tms timing;
-	//clock_init(100);
 	t0 = times(&timing);
 	pid_t pid;
 	
-	//pid = fork();
-	
-	/* Failed to fork(). */
-	/*if (pid < 0)
-		return (-1);
-	*/
-	/* Child process. */
-	/*else if (pid == 0)
-	{
-		work_cpu();
-		_exit(EXIT_SUCCESS);
-	}
-	
-	wait(NULL);*/
-
-	pid_t child;
-	pid_t father;
-
-	father = getpid();
-	
-	pid = fork();
 	pid = fork();
 	
 	/* Failed to fork(). */
 	if (pid < 0)
 		return (-1);
 	
-	/* Parent process. */
-	else if (pid > 0)
+	/* Child process. */
+	else if (pid == 0)
 	{
 		work_cpu();
+		_exit(EXIT_SUCCESS);
 	}
 	
-	/* Child process. */
-	else
-	{
-		work_io();
-		_exit(EXIT_SUCCESS);
-	}
-		
-	while ((child = wait(NULL)) >= 0)
-	if (getpid() != father)
-		_exit(EXIT_SUCCESS);
-
+	wait(NULL);
+	
 	t1 = times(&timing);
 	printf("Test 0\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
 	
@@ -297,31 +267,25 @@ static int sched_test1(void)
 {
 	clock_t t0, t1;    /* Elapsed times.      */
 	struct tms timing;
-	//clock_init(100);
 	t0 = times(&timing);
 	pid_t pid;
 	pid_t child;
 	pid_t father;
-
 	father = getpid();
-		
 	pid = fork();
 	pid = fork();
 
 	/* Failed to fork(). */
 	if (pid < 0)
 		return (-1);
-	
 	/* Parent process. */
-	else if (pid > 0)
-	{
+	else if (pid > 0) {
 		nice(-2*NZERO);
 		work_cpu();
 	}
 	
 	/* Child process. */
-	else
-	{
+	else {
 		nice(2*NZERO);
 		work_io();
 		_exit(EXIT_SUCCESS);
@@ -335,7 +299,6 @@ static int sched_test1(void)
 		_exit(EXIT_SUCCESS);
 	t1 = times(&timing);
 	printf("Test 1\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
-	
 	return (0);
 }
 
@@ -350,53 +313,41 @@ static int sched_test2(void)
 {
 	clock_t t0, t1;    /* Elapsed times.      */
 	struct tms timing;
-	//clock_init(100);
 	t0 = times(&timing);
 	int tamanho = 4;
 	pid_t pid[4];
 	
-	for (int i = 0; i < tamanho; i++)
-	{
+	for (int i = 0; i < tamanho; i++) {
 		pid[i] = fork();
-	
 		/* Failed to fork(). */
 		if (pid[i] < 0)
 			return (-1);
 		
 		/* Child process. */
-		else if (pid[i] == 0)
-		{
-			if (i & 1)
-			{
+		else if (pid[i] == 0) {
+			if (i & 1) {
 				nice(2*NZERO);
 				work_cpu();
 				_exit(EXIT_SUCCESS);
 			}
-			
-			else
-			{	
+			else {	
 				nice(-2*NZERO);
 				pause();
 				_exit(EXIT_SUCCESS);
 			}
 		}
 	}
-	
-	for (int i = 0; i < tamanho; i++)
-	{
+	for (int i = 0; i < tamanho; i++) {
 		if (i & 1)
 			wait(NULL);
 			
-		else
-		{	
+		else {	
 			kill(pid[i], SIGCONT);
 			wait(NULL);
 		}
 	}
-
 	t1 = times(&timing);
 	printf("Test 2\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
-	
 	return (0);
 }
 
@@ -411,7 +362,6 @@ static int sched_test3(void)
 {
 	clock_t t0, t1;    /* Elapsed times.      */
 	struct tms timing;
-	//clock_init(100);
 	t0 = times(&timing);
 	pid_t child;
 	pid_t father;
@@ -420,8 +370,8 @@ static int sched_test3(void)
 
 	fork();
 	fork();
-	fork();
-	fork();
+
+	work_cpu();
 
 	/* Wait for children. */
 	while ((child = wait(NULL)) >= 0)
