@@ -44,6 +44,8 @@ doc/*-kernel
 # ISO Images
 *.img
 *.iso
+*.lock
+hdd.img.lock
 nanvix-iso/*
 tools/run/bochsrc.txt
 
