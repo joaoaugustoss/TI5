@@ -161,7 +161,7 @@ found:
 	
 	nprocs++;
 
-	kprintf("Sou o pid%d nice%d\n", proctab[3].pid, proctab[3].nice);
+	//kprintf("Sou o pid%d nice%d\n", proctab[3].pid, proctab[3].nice);
 
 	return (proc->pid);
 

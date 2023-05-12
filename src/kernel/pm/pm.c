@@ -48,6 +48,11 @@ PUBLIC char idle_kstack[KSTACK_SIZE];
 PUBLIC struct process proctab[PROC_MAX];
 
 /**
+ * @brief Increment.
+ */
+PUBLIC int inc = 1;
+
+/**
  * @brief Current running process. 
  */
 PUBLIC struct process *curr_proc = IDLE;
@@ -121,6 +126,7 @@ PUBLIC void pm_init(void)
 	IDLE->alarm = 0;
 	IDLE->next = NULL;
 	IDLE->chain = NULL;
+	
 	
 	nprocs++;
 

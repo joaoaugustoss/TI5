@@ -280,6 +280,7 @@
 	
 	/* Forward definitions. */
 	EXTERN int shutting_down;
+	EXTERN int inc;		 /**< Increment*/
 	EXTERN struct process proctab[PROC_MAX];
 	EXTERN struct process *curr_proc;
 	EXTERN struct process *last_proc;
