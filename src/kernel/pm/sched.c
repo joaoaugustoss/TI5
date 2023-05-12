@@ -70,8 +70,8 @@ PUBLIC void yield(void)
 {
 	struct process *p;    /* Working process.     */
 	struct process *next; /* Next process to run. */
-	int t0, t1;
-	struct tms timing;
+	//int t0, t1;
+	//struct tms timing;
 
 
 	/* Re-schedule process for execution. */
@@ -126,10 +126,10 @@ PUBLIC void yield(void)
 	next->state = PROC_RUNNING;
 	next->counter = PROC_QUANTUM;
 	if (curr_proc != next) {
-		t0 = sys_times(&timing);
+		//t0 = sys_times(&timing);
 		switch_to(next);
-		t1 = sys_times(&timing);
+		//t1 = sys_times(&timing);
 
-		if(curr_proc->pid > 2 && curr_proc->father->pid == 3) kprintf("Elapsed time = %d - %d = %d", t1 , t0, (t1 - t0));
+		//if(curr_proc->pid > 2 && curr_proc->father->pid == 3) kprintf("Elapsed time = %d - %d = %d", t1 , t0, (t1 - t0));
 	}
 }
