@@ -160,6 +160,7 @@ PUBLIC void kmain(void)
 		}
 		
 		halt();
+		//kprintf("Inc: %d - Nice: %d - Pid %d \n", inc, curr_proc->nice, curr_proc->pid);
 		yield();
 	}
 }

@@ -23,10 +23,14 @@
 #include <nanvix/hal.h>
 #include <nanvix/pm.h>
 #include <signal.h>
+#include <nanvix/klib.h>
+#include <sys/times.h>
+#include <sys/types.h>
+#include <nanvix/syscall.h>
 
 /**
  * @brief Schedules a process to execution.
- * 
+ *
  * @param proc Process to be scheduled.
  */
 PUBLIC void sched(struct process *proc)
@@ -47,13 +51,13 @@ PUBLIC void stop(void)
 
 /**
  * @brief Resumes a process.
- * 
+ *
  * @param proc Process to be resumed.
- * 
+ *
  * @note The process must stopped to be resumed.
  */
 PUBLIC void resume(struct process *proc)
-{	
+{
 	/* Resume only if process has stopped. */
 	if (proc->state == PROC_STOPPED)
 		sched(proc);
@@ -64,8 +68,10 @@ PUBLIC void resume(struct process *proc)
  */
 PUBLIC void yield(void)
 {
-	struct process *p;    /* Working process.     */
+	struct process *p;	  /* Working process.     */
 	struct process *next; /* Next process to run. */
+	// int t0, t1;
+	// struct tms timing;
 
 	/* Re-schedule process for execution. */
 	if (curr_proc->state == PROC_RUNNING)
@@ -77,45 +83,76 @@ PUBLIC void yield(void)
 	/* Check alarm. */
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
-		/* Skip invalid processes. */
+		// Skip invalid processes.
 		if (!IS_VALID(p))
 			continue;
-		
-		/* Alarm has expired. */
+
+		// Alarm has expired.
 		if ((p->alarm) && (p->alarm < ticks))
 			p->alarm = 0, sndsig(p, SIGALRM);
 	}
 
 	/* Choose a process to run next. */
 	next = IDLE;
-	for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	if (inc % 2 == 0)
 	{
-		/* Skip non-ready process. */
-		if (p->state != PROC_READY)
-			continue;
-		
-		/*
-		 * Process with higher
-		 * waiting time found.
-		 */
-		if (p->counter > next->counter)
-		{
-			next->counter++;
-			next = p;
+		for (p = FIRST_PROC; p <= LAST_PROC; p++) {
+			/* Skip non-ready process. */
+			if (p->state != PROC_READY)
+				continue;
+
+			/*
+			 * Find the proccess with big priority 
+			 */
+			if (p->nice <= next->nice) {
+				next->counter++;
+				next = p;
+			} else 
+			/*
+			 * Increment waiting
+			 * time of process.
+			 */
+				p->counter++;
 		}
-			
-		/*
-		 * Increment waiting
-		 * time of process.
-		 */
-		else
-			p->counter++;
+	} else {
+		for (p = FIRST_PROC; p <= LAST_PROC; p++)
+		{
+			/* Skip non-ready process. */
+			if (p->state != PROC_READY)
+				continue;
+
+			/*
+			 * Process with higher
+			 * waiting time found.
+			 */
+			if (p->counter > next->counter)
+			{
+				next->counter++;
+				next = p;
+			}
+			/*
+			 * Increment waiting
+			 * time of process.
+			 */
+			else
+				p->counter++;
+			// p->counter = PROC_QUANTUM;
+		}
 	}
-	
+
 	/* Switch to next process. */
 	next->priority = PRIO_USER;
 	next->state = PROC_RUNNING;
 	next->counter = PROC_QUANTUM;
 	if (curr_proc != next)
+	{
+		//kprintf("Inc: %d - Nice: %d - Pid %d \n", inc, next->nice, next->pid);
+		inc++;
+		//kprintf("Inc = %d\n", inc);
+		// t0 = sys_times(&timing);
 		switch_to(next);
+		// t1 = sys_times(&timing);
+
+		// if(curr_proc->pid > 2 && curr_proc->father->pid == 3) kprintf("Elapsed time = %d - %d = %d", t1 , t0, (t1 - t0));
+	}
 }

@@ -265,40 +265,49 @@ static int sched_test0(void)
  */
 static int sched_test1(void)
 {
-	clock_t t0, t1;    /* Elapsed times.      */
+	clock_t t0, t1; /* Elapsed times.      */
 	struct tms timing;
 	t0 = times(&timing);
 	pid_t pid;
 	pid_t child;
 	pid_t father;
-	father = getpid();
-	pid = fork();
-	pid = fork();
-
+	father = getpid();  // A
+	pid = fork();		// B
+	if (pid == 0)
+	{
+		pid = fork();	// C
+		if (pid == 0)
+		{
+			nice(1);
+		} else {
+			nice(2);
+		}
+	}
+	
 	/* Failed to fork(). */
 	if (pid < 0)
-		return (-1);
+		return (5);
 	/* Parent process. */
-	else if (pid > 0) {
-		nice(-2*NZERO);
+	else if (pid > 0)
+	{
+		nice(5);
 		work_cpu();
 	}
-	
+
 	/* Child process. */
-	else {
-		nice(2*NZERO);
+	else
+	{
+		//nice(2 * NZERO);
 		work_io();
 		_exit(EXIT_SUCCESS);
-	}
-		
+	}	
 	while ((child = wait(NULL)) >= 0)
 		/* noop. */;
-	
 	/* Die. */
 	if (getpid() != father)
 		_exit(EXIT_SUCCESS);
 	t1 = times(&timing);
-	printf("Test 1\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1-t0));
+	printf("Test 1\tStarted: %dms\tEnded: %dms\tElapsed time: %dms\n", t0, t1, (t1 - t0));
 	return (0);
 }
 
