@@ -70,8 +70,8 @@ PUBLIC void yield(void)
 {
 	struct process *p;	  /* Working process.     */
 	struct process *next; /* Next process to run. */
-	// int t0, t1;
-	// struct tms timing;
+	clock_t t0;
+	struct tms timing;
 
 	/* Re-schedule process for execution. */
 	if (curr_proc->state == PROC_RUNNING)
@@ -139,6 +139,11 @@ PUBLIC void yield(void)
 			// p->counter = PROC_QUANTUM;
 		}
 	}
+	if (next->pid >= 3 && next->pid != controlProcess[next->pid]) {
+		t0 = sys_times(&timing);
+		kprintf("Tempo de resposta do processo de pid %d = %dms\n", next->pid, t0);
+		controlProcess[next->pid] = next->pid;
+	}
 
 	/* Switch to next process. */
 	next->priority = PRIO_USER;
@@ -146,6 +151,7 @@ PUBLIC void yield(void)
 	next->counter = PROC_QUANTUM;
 	if (curr_proc != next)
 	{
+		
 		//kprintf("Inc: %d - Nice: %d - Pid %d \n", inc, next->nice, next->pid);
 		inc++;
 		//kprintf("Inc = %d\n", inc);

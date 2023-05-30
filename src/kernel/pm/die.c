@@ -25,6 +25,8 @@
 #include <nanvix/pm.h>
 #include <signal.h>
 #include <nanvix/klib.h>
+#include <sys/times.h>
+#include <nanvix/syscall.h>
 
 /**
  * @brief Is the system shutting down?
@@ -38,6 +40,8 @@ PUBLIC int shutting_down = 0;
  */
 PUBLIC void die(int status)
 {
+	clock_t t0;
+	struct tms timing;
 	struct process *p;
 	//kprintf("Vamos ver um trem (die). %d\n", curr_proc->counter);	
 	/* Shall not occour. */
@@ -108,6 +112,9 @@ PUBLIC void die(int status)
 	curr_proc->alarm = 0;
 	
 	sndsig(curr_proc->father, SIGCHLD);
+	t0 = sys_times(&timing);
+	kprintf("Tempo em que o processo de pid %d morre = %dms\n", curr_proc->pid, t0);
+
 	yield();
 }
 

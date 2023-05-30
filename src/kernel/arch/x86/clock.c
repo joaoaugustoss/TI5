@@ -48,7 +48,7 @@ PRIVATE void do_clock()
 	/* Give up processor time. */
 	curr_proc->counter = curr_proc->counter - 1;
 	if (curr_proc->counter == 0) {
-		kprintf("Inc: %d - Nice: %d - Pid %d \n", inc, curr_proc->nice, curr_proc->pid);
+		//kprintf("Inc: %d - Nice: %d - Pid %d \n", inc, curr_proc->nice, curr_proc->pid);
 		//if( curr_proc != IDLE && curr_proc != INIT ) kprintf("Curr_proc (%d) Counter: %d", curr_proc->pid, curr_proc->counter);
 		yield(); 	
 	} 

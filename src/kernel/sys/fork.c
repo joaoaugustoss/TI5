@@ -25,12 +25,16 @@
 #include <nanvix/pm.h>
 #include <sys/types.h>
 #include <errno.h>
+#include <sys/times.h>
+#include <nanvix/syscall.h>
 
 /*
  * Creates a new process.
  */
 PUBLIC pid_t sys_fork(void)
 {
+	clock_t t0;
+	struct tms timing;
 	int i;                /* Loop index.     */
 	int err;              /* Error?          */
 	struct process *proc; /* Process.        */
@@ -155,6 +159,9 @@ found:
 	proc->next = NULL;
 	proc->chain = NULL;
 	proc->counter = 0;
+	t0 = sys_times(&timing);
+	kprintf("Tempo em que o processo de pid %d e' criado = %dms\n", proc->pid, t0);
+
 	sched(proc);
 
 	curr_proc->nchildren++;

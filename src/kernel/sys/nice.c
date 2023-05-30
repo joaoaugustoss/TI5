@@ -39,7 +39,7 @@ PUBLIC int sys_nice(int incr)
 		curr_proc->nice = 0;
 	else if (curr_proc->nice >= 2*NZERO)
 		curr_proc->nice = 2*NZERO - 1;
-	kprintf("Inc: %d - Nice: %d - Pid %d \n", incr, curr_proc->nice, curr_proc->pid);
+	//kprintf("Inc: %d - Nice: %d - Pid %d \n", incr, curr_proc->nice, curr_proc->pid);
 	return (curr_proc->nice);
 }
 

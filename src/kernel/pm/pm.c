@@ -48,6 +48,11 @@ PUBLIC char idle_kstack[KSTACK_SIZE];
 PUBLIC struct process proctab[PROC_MAX];
 
 /**
+ * @brief Control process
+*/
+PUBLIC int controlProcess[PROC_MAX];
+
+/**
  * @brief Increment.
  */
 PUBLIC int inc = 1;
@@ -71,6 +76,12 @@ PUBLIC pid_t next_pid = 0;
  * @brief Current number of processes in the system.
  */
 PUBLIC unsigned nprocs = 0;
+
+void iniciaControlProcess(int * controlProcess) {
+	for(int i = 0; i < PROC_MAX; i++) {
+		controlProcess[i] = PROC_MAX + 1;
+	}
+}
 
 /**
  * @brief Initializes the process management system.
@@ -126,7 +137,8 @@ PUBLIC void pm_init(void)
 	IDLE->alarm = 0;
 	IDLE->next = NULL;
 	IDLE->chain = NULL;
-	
+
+	iniciaControlProcess(controlProcess);
 	
 	nprocs++;
 
