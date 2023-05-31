@@ -71,6 +71,7 @@ PUBLIC void yield(void)
 	struct process *p;	  /* Working process.     */
 	struct process *next; /* Next process to run. */
 	clock_t t0;
+	char s[10];
 	struct tms timing;
 
 	/* Re-schedule process for execution. */
@@ -139,9 +140,14 @@ PUBLIC void yield(void)
 			// p->counter = PROC_QUANTUM;
 		}
 	}
+	
 	if (next->pid >= 3 && next->pid != controlProcess[next->pid]) {
 		t0 = sys_times(&timing);
-		kprintf("Tempo de resposta do processo de pid %d = %dms\n", next->pid, t0);
+		itoa(s, t0, 'd');
+		//t0 = t0 + 2;
+		//kprintf("%s", s);
+		kprintf("%d - %s\n", next->pid, s);
+		//kprintf("R pid %d = %dms\n", next->pid, t0);
 		controlProcess[next->pid] = next->pid;
 	}
 
