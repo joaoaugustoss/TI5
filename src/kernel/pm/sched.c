@@ -144,10 +144,7 @@ PUBLIC void yield(void)
 	if (next->pid >= 3 && next->pid != controlProcess[next->pid]) {
 		t0 = sys_times(&timing);
 		itoa(s, t0, 'd');
-		//t0 = t0 + 2;
-		//kprintf("%s", s);
 		kprintf("%d - %s\n", next->pid, s);
-		//kprintf("R pid %d = %dms\n", next->pid, t0);
 		controlProcess[next->pid] = next->pid;
 	}
 
@@ -157,14 +154,7 @@ PUBLIC void yield(void)
 	next->counter = PROC_QUANTUM;
 	if (curr_proc != next)
 	{
-		
-		//kprintf("Inc: %d - Nice: %d - Pid %d \n", inc, next->nice, next->pid);
 		inc++;
-		//kprintf("Inc = %d\n", inc);
-		// t0 = sys_times(&timing);
 		switch_to(next);
-		// t1 = sys_times(&timing);
-
-		// if(curr_proc->pid > 2 && curr_proc->father->pid == 3) kprintf("Elapsed time = %d - %d = %d", t1 , t0, (t1 - t0));
 	}
 }
