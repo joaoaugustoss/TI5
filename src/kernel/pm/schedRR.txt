@@ -23,7 +23,10 @@
 #include <nanvix/hal.h>
 #include <nanvix/pm.h>
 #include <signal.h>
-
+#include <nanvix/klib.h>
+#include <sys/times.h>
+#include <sys/types.h>
+#include <nanvix/syscall.h>
 /**
  * @brief Schedules a process to execution.
  * 
@@ -66,9 +69,11 @@ PUBLIC void yield(void)
 {
 	struct process *p;    /* Working process.     */
 	struct process *next; /* Next process to run. */
+	
 	clock_t t0;
-	char s[10];
+	char s[15];
 	struct tms timing;
+	
 
 	/* Re-schedule process for execution. */
 	if (curr_proc->state == PROC_RUNNING)
@@ -114,18 +119,20 @@ PUBLIC void yield(void)
 		else
 			p->counter++;
 	}
-
-	if (next->pid >= 3 && next->pid != controlProcess[next->pid]) {
-		t0 = sys_times(&timing);
-		itoa(s, t0, 'd');
-		kprintf("%d - %s\n", next->pid, s);
-		controlProcess[next->pid] = next->pid;
-	}
 	
 	/* Switch to next process. */
 	next->priority = PRIO_USER;
 	next->state = PROC_RUNNING;
 	next->counter = PROC_QUANTUM;
-	if (curr_proc != next)
+	if (curr_proc != next) {
+		if (next->pid >= 3 && next->pid != controlProcess[next->pid]) {
+			t0 = sys_times(&timing);
+			itoa(s, t0, 'd');
+			s[14] = '\0';
+			kprintf("%d-%s", next->pid, s);
+			//kprintf("%s", s);
+			controlProcess[next->pid] = next->pid;
+		}
 		switch_to(next);
+	}
 }

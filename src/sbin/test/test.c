@@ -271,11 +271,11 @@ static int sched_test1(void)
 	pid_t pid;
 	pid_t child;
 	pid_t father;
-	father = getpid();  // A
-	pid = fork();		// B
+	father = getpid();  
+	pid = fork();		
 	if (pid == 0)
 	{
-		pid = fork();	// C
+		pid = fork();	
 		if (pid == 0)
 		{
 			nice(1);
@@ -297,7 +297,6 @@ static int sched_test1(void)
 	/* Child process. */
 	else
 	{
-		//nice(2 * NZERO);
 		work_io();
 		_exit(EXIT_SUCCESS);
 	}	

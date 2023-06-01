@@ -137,14 +137,14 @@ PUBLIC void yield(void)
 			 */
 			else
 				p->counter++;
-			// p->counter = PROC_QUANTUM;
 		}
 	}
 	
 	if (next->pid >= 3 && next->pid != controlProcess[next->pid]) {
 		t0 = sys_times(&timing);
 		itoa(s, t0, 'd');
-		kprintf("%d - %s\n", next->pid, s);
+		s[9] = '\0';
+		kprintf("Tempo de resposta pid: %d - %s\n", next->pid, s);
 		controlProcess[next->pid] = next->pid;
 	}
 

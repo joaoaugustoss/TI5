@@ -33,8 +33,11 @@
  */
 PUBLIC pid_t sys_fork(void)
 {
-	//clock_t t0;
-	//struct tms timing;
+	
+	clock_t t0;
+	struct tms timing;
+	char s[10];
+	
 	int i;                /* Loop index.     */
 	int err;              /* Error?          */
 	struct process *proc; /* Process.        */
@@ -159,16 +162,17 @@ found:
 	proc->next = NULL;
 	proc->chain = NULL;
 	proc->counter = 0;
-	//t0 = sys_times(&timing);
-	//kprintf("Tempo em que o processo de pid %d e' criado = %dms\n", proc->pid, t0);
-
+	
+	t0 = sys_times(&timing);
+	itoa(s, t0, 'd');
+	s[9] = '\0';
+	kprintf("Fork pid: %d - %s", proc->pid, s);
+	
 	sched(proc);
 
 	curr_proc->nchildren++;
 	
 	nprocs++;
-
-	//kprintf("Sou o pid%d nice%d\n", proctab[3].pid, proctab[3].nice);
 
 	return (proc->pid);
 
